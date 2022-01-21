@@ -1,0 +1,50 @@
+name: Deploy App 
+on: 
+  workflow_call:
+    inputs:
+      app_name:
+        required: true
+        type: string
+      env_name:
+        required: true
+        type: string
+      tag: 
+        required: true
+        type: string
+      hostname:
+        required: true
+        type: string
+    secrets:
+      KUBECONFIG: 
+        required: true
+
+jobs:        
+  deploy:
+    name: Deploy qa ${{ needs.test_app.outputs.app_name }}
+    runs-on: ubuntu-latest
+    container: iaacautomation/deploy    
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Download Infra/deploy info
+        uses: actions/download-artifact@v2
+        with:
+          name: ${ env_name }}-${{ inputs.app_name }}-infra
+          path: infra/
+
+      - name: Get Kubeconfig
+        run: |
+          mkdir ${HOME}/.kube/ -p
+          echo "${{ secrets.KUBECONFIG }}" > ${HOME}/.kube/config
+
+      - name: Run Diff
+        run: helm diff upgrade --allow-unreleased --namespace ${{ inputs.env_name }} ${{ inputs.app_name }} infra/${{ inputs.app_name }}/ 
+
+      - name: Run Install
+        run: |
+          helm upgrade -i --namespace ${{ inputs.env_name }}
+            --set image.repository=${{ inputs.env_name }}-${{ inputs.app_name }}
+            --set image.tag=${{ inputs.tag }}
+            --set ingress.hosts[0].host=${{ inputs.hostname }}
+            --values infra/values.yaml ${{ needs.test_app.outputs.app_name }} infra/${{ inputs.app_name }}/

@@ -1,0 +1,37 @@
+name: Release
+on:
+  workflow_call:
+    inputs:
+      tag:
+        required: true
+        type: string
+jobs:
+  get_env:
+    name: Get Environment
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    outputs:
+      env_name: ${{ steps.get_env.outputs.env_name }}
+      domain_prepend: ${{ steps.get_env.outputs.domain_prepend }}
+      tag: ${{ steps.get_env.outputs.tag }}
+    steps:
+      - name: Set env variable
+        run: |
+          if [[ "${{ contains(github.ref_name,'-') }}" == "true" ]]
+          then
+            mapfile -d \- -t temp < <(echo ${{ github.ref_name }})
+            echo "::set-output name=env_name::${temp[0]}"
+            echo "::set-output name=tag::${temp[1]}"
+            echo ${temp[0]} ${temp[1]}
+            if [[ ${temp[0]} != 'prod' ]]
+            then 
+              echo "::set-output name=domain_prepend::${temp[0]}-"
+            fi  
+          else
+            echo "::set-output name=env_name::stage"
+            echo "::set-output name=tag::${{ github.ref_name }}"
+            echo "::set-output name=domain_prepend::stage-"
+          fi
+        id: get_env
