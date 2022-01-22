@@ -41,6 +41,9 @@ on:
       BACKEND_DOMAIN_MEASURE:
         required: true
         type: string
+      REDIRECT:
+        required: true
+        type: string
 jobs:
   build:
     name: Application
@@ -79,7 +82,7 @@ jobs:
         --env.PUBLISH=https://${{ inputs.PUBLISH }} \
         --env.BACKEND_DOMAIN_SOCKET=https://${{ inputs.BACKEND_DOMAIN_SOCKET }} \
         --env.BACKEND_DOMAIN_MEASURE=https://${{ inputs.BACKEND_DOMAIN_MEASURE }} \
-        --env.DEFAULT_REDIRECTION=http://${{ inputs.HOSTNAME }}
+        --env.DEFAULT_REDIRECTION=http://${{ inputs.REDIRECT }}
 
     - name: Upload build to artificats
       uses: actions/upload-artifact@v2
