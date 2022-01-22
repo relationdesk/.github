@@ -16,6 +16,7 @@ jobs:
       env_name: ${{ steps.get_env.outputs.env_name }}
       domain_prepend: ${{ steps.get_env.outputs.domain_prepend }}
       tag: ${{ steps.get_env.outputs.tag }}
+      KUBECONFIG: ${{ steps.get_env.outputs.KUBECONFIG }}
     steps:
       - name: Set env variable
         run: |
@@ -25,6 +26,7 @@ jobs:
             echo "::set-output name=env_name::${temp[0]}"
             echo "::set-output name=tag::${temp[1]}"
             echo ${temp[0]} ${temp[1]}
+            echo "::set-output name=KUBECONFIG::${{ secrets.PROD_KUBECONFIG }}"
             if [[ ${temp[0]} != 'prod' ]]
             then 
               echo "::set-output name=domain_prepend::${temp[0]}-"
@@ -33,5 +35,6 @@ jobs:
             echo "::set-output name=env_name::stage"
             echo "::set-output name=tag::${{ github.ref_name }}"
             echo "::set-output name=domain_prepend::stage-"
+            echo "::set-output name=KUBECONFIG::${{ secrets.STAGE_KUBECONFIG }}"
           fi
         id: get_env
