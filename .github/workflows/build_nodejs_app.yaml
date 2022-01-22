@@ -2,10 +2,10 @@ name: Build App
 on: 
   workflow_call:
     inputs:
-      frontend_name: 
+      HOSTNAME:
         required: true
         type: string
-      HOSTNAME:
+      FRONTEND_NAME: 
         required: true
         type: string
       DOMAIN_SETTINGS:
@@ -62,7 +62,7 @@ jobs:
       with:
         path: ${{ steps.npm-cache.outputs.dir }}
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: ${{ runner.os }}-node-${{ inputs.frontend_name }}
+        restore-keys: ${{ runner.os }}-node-${{ inputs.FRONTEND_NAME }}
       
     - name: Install packages
       run: npm install --no-progress --silent
@@ -87,11 +87,11 @@ jobs:
     - name: Upload build to artificats
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ inputs.frontend_name }}-www
+        name: ${{ inputs.FRONTEND_NAME }}-www
         path: ${{ github.workspace }}/www
 
     - name: Upload infra/deployment info
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ inputs.frontend_name }}-infra
+        name: ${{ inputs.FRONTEND_NAME }}-infra
         path: ${{ github.workspace }}/infra
