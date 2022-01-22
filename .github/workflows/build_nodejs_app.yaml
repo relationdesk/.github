@@ -73,7 +73,7 @@ jobs:
         --env.DOMAIN_LOGIN=https://${{ inputs.DOMAIN_LOGIN }} \
         --env.DOMAIN_PUBLISH=https://${{ inputs.DOMAIN_PUBLISH }} \
         --env.DOMAIN_ENGAGE=https://${{ inputs.DOMAIN_ENGAGE }} \
-        --env.SETTINGS_API=https://${{ inputs.BACKEND_DOMAIN_SETTINGS }} \
+        --env.SETTINGS_API=https://${{ inputs.SETTINGS_API }} \
         --env.API=https://${{ inputs.API }} \
         --env.AUTH=https://${{ inputs.AUTH }} \
         --env.PUBLISH=https://${{ inputs.PUBLISH }} \
