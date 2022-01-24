@@ -2,9 +2,15 @@ name: Release
 on:
   workflow_call:
     inputs:
-      tag:
+      TAG:
         required: true
         type: string
+      APP_NAME:
+        required: true
+        type: string
+    outputs:
+      APP_NAME: ${{ jobs.get_env.outputs.APP_NAME }}
+
 jobs:
   get_env:
     name: Get Environment
@@ -13,28 +19,29 @@ jobs:
       run:
         shell: bash
     outputs:
-      env_name: ${{ steps.get_env.outputs.env_name }}
-      domain_prepend: ${{ steps.get_env.outputs.domain_prepend }}
-      tag: ${{ steps.get_env.outputs.tag }}
+      ENV_NAME: ${{ steps.get_env.outputs.ENV_NAME }}
+      DOMAIN_PREPEND: ${{ steps.get_env.outputs.DOMAIN_PREPEND }}
+      TAG: ${{ steps.get_env.outputs.TAG }}
       KUBECONFIG: ${{ steps.get_env.outputs.KUBECONFIG }}
+      APP_NAME: ${{ inputs.APP_NAME }}
     steps:
       - name: Set env variable
         run: |
           if [[ "${{ contains(github.ref_name,'-') }}" == "true" ]]
           then
             mapfile -d \- -t temp < <(echo ${{ github.ref_name }})
-            echo "::set-output name=env_name::${temp[0]}"
-            echo "::set-output name=tag::${temp[1]}"
+            echo "::set-output name=ENV_NAME::${temp[0]}"
+            echo "::set-output name=TAG::${temp[1]}"
             echo ${temp[0]} ${temp[1]}
             echo "::set-output name=KUBECONFIG::${{ secrets.PROD_KUBECONFIG }}"
             if [[ ${temp[0]} != 'prod' ]]
             then 
-              echo "::set-output name=domain_prepend::${temp[0]}-"
+              echo "::set-output name=DOMAIN_PREPEND::${temp[0]}-"
             fi  
           else
-            echo "::set-output name=env_name::stage"
-            echo "::set-output name=tag::${{ github.ref_name }}"
-            echo "::set-output name=domain_prepend::stage-"
+            echo "::set-output name=ENV_NAME::stage"
+            echo "::set-output name=TAG::${{ github.ref_name }}"
+            echo "::set-output name=DOMAIN_PREPEND::stage-"
             echo "::set-output name=KUBECONFIG::${{ secrets.STAGE_KUBECONFIG }}"
           fi
         id: get_env

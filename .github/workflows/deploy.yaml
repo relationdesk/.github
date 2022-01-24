@@ -2,16 +2,16 @@ name: Deploy App
 on: 
   workflow_call:
     inputs:
-      app_name:
+      APP_NAME:
         required: true
         type: string
-      env_name:
+      ENV_NAME:
         required: true
         type: string
-      tag: 
+      TAG: 
         required: true
         type: string
-      hostname:
+      HOSTNAME:
         required: true
         type: string
     secrets:
@@ -20,7 +20,7 @@ on:
 
 jobs:        
   deploy:
-    name: Deploy qa ${{ needs.test_app.outputs.app_name }}
+    name: Deploy ${{ inputs.ENV_NAME }} ${{ inputs.APP_NAME }}
     runs-on: ubuntu-latest
     container: iaacautomation/deploy    
     defaults:
@@ -30,7 +30,7 @@ jobs:
       - name: Download Infra/deploy info
         uses: actions/download-artifact@v2
         with:
-          name: ${ env_name }}-${{ inputs.app_name }}-infra
+          name: ${ ENV_NAME }}-${{ inputs.APP_NAME }}-infra
           path: infra/
 
       - name: Get Kubeconfig
@@ -39,12 +39,12 @@ jobs:
           echo "${{ secrets.KUBECONFIG }}" > ${HOME}/.kube/config
 
       - name: Run Diff
-        run: helm diff upgrade --allow-unreleased --namespace ${{ inputs.env_name }} ${{ inputs.app_name }} infra/${{ inputs.app_name }}/ 
+        run: helm diff upgrade --allow-unreleased --namespace ${{ inputs.ENV_NAME }} ${{ inputs.APP_NAME }} infra/${{ inputs.APP_NAME }}/ 
 
       - name: Run Install
         run: |
-          helm upgrade -i --namespace ${{ inputs.env_name }}
-            --set image.repository=${{ inputs.env_name }}-${{ inputs.app_name }}
-            --set image.tag=${{ inputs.tag }}
-            --set ingress.hosts[0].host=${{ inputs.hostname }}
-            --values infra/values.yaml ${{ needs.test_app.outputs.app_name }} infra/${{ inputs.app_name }}/
+          helm upgrade -i --namespace ${{ inputs.ENV_NAME }}
+            --set image.repository=${{ inputs.ENV_NAME }}-${{ inputs.APP_NAME }}
+            --set image.tag=${{ inputs.TAG }}
+            --set ingress.hosts[0].host=${{ inputs.HOSTNAME }}
+            --values infra/values.yaml ${{ needs.test_app.outputs.APP_NAME }} infra/${{ inputs.APP_NAME }}/

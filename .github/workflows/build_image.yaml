@@ -2,17 +2,17 @@ name: Build Docker Image
 on: 
   workflow_call:
     inputs:
-      username:
+      USERNAME:
         required: true
         type: string
-      tag:
+      TAG:
         required: true
         type: string
-      frontend_name: 
+      FRONTEND_NAME: 
         required: true
         type: string
     secrets:
-      token: 
+      TOKEN: 
         required: true
 jobs:
   image:
@@ -22,21 +22,21 @@ jobs:
     - name: Download Infra/deploy info
       uses: actions/download-artifact@v2
       with:
-        name: ${{ inputs.frontend_name }}-infra
+        name: ${{ inputs.FRONTEND_NAME }}-infra
         path: ${{ github.workspace }}/infra/
 
     - name: Download build files
       uses: actions/download-artifact@v2
       with:
-        name: ${{ inputs.frontend_name }}-www
+        name: ${{ inputs.FRONTEND_NAME }}-www
         path: ${{ github.workspace }}/infra/www
 
     - name: Log in to the Github Container registry
       uses: docker/login-action@v1
       with:
         registry: ghcr.io
-        username: ${{ inputs.username }}
-        password: ${{ secrets.token }}
+        username: ${{ inputs.USERNAME }}
+        password: ${{ secrets.TOKEN }}
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
@@ -46,7 +46,7 @@ jobs:
       with:
         context: ${{ github.workspace }}/infra
         push: true
-        tags: ghcr.io/${{ github.repository }}/${{ inputs.frontend_name }}:${{ inputs.tag }}
+        tags: ghcr.io/${{ github.repository }}/${{ inputs.FRONTEND_NAME }}:${{ inputs.TAG }}
         platforms: linux/amd64
         cache-from: type=gha
         cache-to: type=gha,mode=max
@@ -64,9 +64,9 @@ jobs:
       id: security-scan
       uses: azure/container-scan@v0
       with:
-        image-name: ghcr.io/${{ github.repository }}/${{ inputs.frontend_name }}:${{ inputs.tag }}
-        username: ${{ inputs.username }}
-        password: ${{ secrets.token }}
+        image-name: ghcr.io/${{ github.repository }}/${{ inputs.FRONTEND_NAME }}:${{ inputs.TAG }}
+        USERNAME: ${{ inputs.USERNAME }}
+        password: ${{ secrets.TOKEN }}
 
     - name: Format scan output
       run: |
@@ -76,5 +76,5 @@ jobs:
     - name: Upload build to artificats
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ inputs.frontend_name }}-security-scan
+        name: ${{ inputs.FRONTEND_NAME }}-security-scan
         path: ./scan.html
