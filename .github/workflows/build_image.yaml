@@ -15,7 +15,7 @@ on:
       TOKEN: 
         required: true
     outputs:
-      SCAN_OUTCOME: ${{ jobs.security_scan.outcome }}
+      SCAN_OUTCOME: ${{ jobs.security_scan.outputs.outcome }}
 jobs:
   image:
     name: Docker Image
