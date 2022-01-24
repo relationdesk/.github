@@ -76,5 +76,5 @@ jobs:
     - name: Upload build to artificats
       uses: actions/upload-artifact@v2
       with:
-        name: ${{ inputs.FRONTEND_NAME }}-security-scan
+        name: security-scan
         path: ./scan.html
