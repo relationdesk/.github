@@ -8,7 +8,7 @@ on:
       TAG:
         required: true
         type: string
-      FRONTEND_NAME: 
+      IMAGE_NAME: 
         required: true
         type: string
     secrets:
@@ -49,7 +49,7 @@ jobs:
       with:
         context: ${{ github.workspace }}/infra
         push: true
-        tags: ghcr.io/${{ github.repository }}/${{ inputs.FRONTEND_NAME }}:${{ inputs.TAG }}
+        tags: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG }}
         platforms: linux/amd64
         cache-from: type=gha
         cache-to: type=gha,mode=max
@@ -69,7 +69,7 @@ jobs:
       id: security-scan
       uses: azure/container-scan@v0
       with:
-        image-name: ghcr.io/${{ github.repository }}/${{ inputs.FRONTEND_NAME }}:${{ inputs.TAG }}
+        image-name: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG }}
         USERNAME: ${{ inputs.USERNAME }}
         password: ${{ secrets.TOKEN }}
 

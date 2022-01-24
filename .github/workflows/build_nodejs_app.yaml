@@ -44,6 +44,8 @@ on:
       REDIRECT:
         required: true
         type: string
+      outputs:
+        value: ${{ inputs.FRONTEND_NAME }}
 jobs:
   build:
     name: Application
