@@ -30,7 +30,7 @@ jobs:
       - name: Download Infra/deploy info
         uses: actions/download-artifact@v2
         with:
-          name: ${ ENV_NAME }}-${{ inputs.APP_NAME }}-infra
+          name: infra
           path: infra/
 
       - name: Get Kubeconfig
