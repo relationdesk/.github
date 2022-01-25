@@ -21,11 +21,13 @@ on:
       SCAN_OUTCOME: 
         value: ${{ jobs.security_scan.outputs.outcome }}
       APP_NAME: 
-        value: ${{ inputs.APP_NAME }}
+        value: ${{ jobs.image.outputs.APP_NAME }}
 jobs:
   image:
     name: Docker Image
     runs-on: ubuntu-latest
+    outputs:
+      APP_NAME: ${{ inputs.APP_NAME }}
     steps:
     - name: Download Infra/deploy info
       uses: actions/download-artifact@v2
