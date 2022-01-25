@@ -1,6 +1,10 @@
 name: Test Helm Chart
 on:
   workflow_call:
+    inputs:
+      APP_NAME:
+        required: true
+        type: string
 jobs:
   test_helm_chart:
     name: Test Helm Chart
@@ -29,7 +33,7 @@ jobs:
       - name: Run chart-testing (list-changed)
         id: list-changed
         run: |          
-          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }})
+          changed=$(ct list-changed --target-branch ${{ github.event.repository.default_branch }}) --chart-dirs infra/${{ inputs.APP_NAME }}
           if [[ -n "$changed" ]]
           then
             echo "::set-output name=changed::true"
@@ -43,4 +47,4 @@ jobs:
         if: steps.list-changed.outputs.changed == 'true'
 
       - name: Run chart-testing (install)
-        run: ct install --target-branch ${{ github.event.repository.default_branch }}
+        run: ct install --target-branch ${{ github.event.repository.default_branch }} --chart-dirs infra/${{ inputs.APP_NAME }}
