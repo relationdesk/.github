@@ -24,7 +24,7 @@ on:
         value: ${{ jobs.image.outputs.APP_NAME }}
 jobs:
   image:
-    name: Docker Image
+    name: Image
     runs-on: ubuntu-latest
     outputs:
       APP_NAME: ${{ inputs.APP_NAME }}
@@ -62,7 +62,7 @@ jobs:
         cache-to: type=gha,mode=max
         
   security_scan:
-    name: Run Security Scan
+    name: Security Scan
     needs:      
       - image
     runs-on: ubuntu-latest
