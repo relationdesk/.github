@@ -46,12 +46,14 @@ on:
         type: string
     outputs:
       APP_NAME:
-        value: ${{ inputs.FRONTEND_NAME }}
+        value: ${{ jobs.build.outputs.APP_NAME }}
 jobs:
   build:
     name: Application
     runs-on: ubuntu-latest
     container: node:7.6.0-alpine
+    outputs:
+      APP_NAME: ${{ inputs.FRONTEND_NAME }}
     steps:     
     - name: Get Code
       uses: actions/checkout@v2
