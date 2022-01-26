@@ -12,13 +12,13 @@ on:
       APP_NAME: 
         value: ${{ jobs.get_env.outputs.APP_NAME }}
       ENV_NAME: 
-        value: ${{ steps.get_env.outputs.ENV_NAME }}
+        value: ${{ jobs.get_env.outputs.ENV_NAME }}
       DOMAIN_PREPEND: 
-        value: ${{ steps.get_env.outputs.DOMAIN_PREPEND }}
+        value: ${{ jobs.get_env.outputs.DOMAIN_PREPEND }}
       TAG: 
-        value: ${{ steps.get_env.outputs.TAG }}
+        value: ${{ jobs.get_env.outputs.TAG }}
       KUBECONFIG: 
-        value: ${{ steps.get_env.outputs.KUBECONFIG }}
+        value: ${{ jobs.get_env.outputs.KUBECONFIG }}
 
 jobs:
   get_env:
