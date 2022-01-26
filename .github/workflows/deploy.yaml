@@ -38,13 +38,13 @@ jobs:
       - name: Get Kubeconfig
         run: |
           mkdir ${HOME}/.kube/ -p
-          if [[ "${{ inputs.ENV_NAME" == 'stage ']]
+          if [[ "${{ inputs.ENV_NAME }}" == 'stage ']]
           then
             echo "${{ secrets.STAGE_KUBECONFIG }}" > ${HOME}/.kube/config
           else
             echo "${{ secrets.PROD_KUBECONFIG }}" > ${HOME}/.kube/config
           fi
-          
+
       - name: Run Diff
         run: helm diff upgrade --allow-unreleased --namespace ${{ inputs.ENV_NAME }} ${{ inputs.APP_NAME }} infra/${{ inputs.APP_NAME }}/ 
 
