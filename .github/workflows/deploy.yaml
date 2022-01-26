@@ -38,7 +38,7 @@ jobs:
       - name: Get Kubeconfig
         run: |
           mkdir ${HOME}/.kube/ -p
-          if [[ "${{ inputs.ENV_NAME }}" == 'stage ']]
+          if [[ "${{ inputs.ENV_NAME }}" == 'stage']]
           then
             echo "${{ secrets.STAGE_KUBECONFIG }}" > ${HOME}/.kube/config
           else
