@@ -16,9 +16,9 @@ on:
         type: string
     secrets:
       STAGE_KUBECONFIG:
-        required: true
+        required: false
       PROD_KUBECONFIG:
-        required: true
+        required: false
 
 jobs:        
   deploy:
