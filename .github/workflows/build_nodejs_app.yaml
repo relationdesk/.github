@@ -55,8 +55,6 @@ jobs:
   build:
     name: Application
     runs-on: ubuntu-latest
-    env:
-      NVM_DIR: ${{ env.HOME }}/.nvm
     outputs:
       APP_NAME: ${{ inputs.FRONTEND_NAME }}
     steps:     
@@ -67,6 +65,8 @@ jobs:
         run: |
           apt-get update && apt-get install -y curl
           curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+          export NVM_DIR="$HOME/.nvm"
+          nvm use ${{ inputs.NPM_VERSION }}          
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           nvm install ${{ inputs.NPM_VERSION }}
           nvm use ${{ inputs.NPM_VERSION }}
@@ -75,6 +75,7 @@ jobs:
       - name: Get npm cache directory
         id: npm-cache
         run: |
+          export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           nvm use ${{ inputs.NPM_VERSION }}
           echo "::set-output name=dir::$(npm config get cache)"
@@ -88,12 +89,14 @@ jobs:
 
       - name: Install packages
         run: |
+          export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           nvm use ${{ inputs.NPM_VERSION }}
           npm install
       
       - name: Build
         run: |
+          export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           nvm use ${{ inputs.NPM_VERSION }}
           npm run webpack-prod -- \
