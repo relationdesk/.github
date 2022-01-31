@@ -55,59 +55,70 @@ jobs:
   build:
     name: Application
     runs-on: ubuntu-latest
+    env:
+      NVM_DIR: ${{ env.HOME }}/.nvm
     outputs:
       APP_NAME: ${{ inputs.FRONTEND_NAME }}
     steps:     
-    - name: Get Code
-      uses: actions/checkout@v2
+      - name: Get Code
+        uses: actions/checkout@v2
 
-    - name: Get npm cache directory
-      id: npm-cache
-      run: echo "::set-output name=dir::$(npm config get cache)"
+      - name: Setup NVM
+        run: |
+          apt-get update && apt-get install -y curl
+          curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm install ${{ inputs.NPM_VERSION }}
+          nvm use ${{ inputs.NPM_VERSION }}
+          nvm install-latest-npm
 
-    - name: Setup Cache
-      uses: actions/cache@v2
-      with:
-        path: ${{ steps.npm-cache.outputs.dir }}
-        key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
-        restore-keys: ${{ runner.os }}-node-${{ inputs.FRONTEND_NAME }}
+      - name: Get npm cache directory
+        id: npm-cache
+        run: |
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm use ${{ inputs.NPM_VERSION }}
+          echo "::set-output name=dir::$(npm config get cache)"
+
+      - name: Setup Cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.npm-cache.outputs.dir }}
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: ${{ runner.os }}-node-
+
+      - name: Install packages
+        run: |
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm use ${{ inputs.NPM_VERSION }}
+          npm install
       
-    - name: Setup NPM
-      run: |
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
-        source ${HOME}/.nvm/nvm.sh
-        nvm install ${{ inputs.NPM_VERSION }}
-        nvm use ${{ inputs.NPM_VERSION }}
-        nvm install-latest-npm
+      - name: Build
+        run: |
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm use ${{ inputs.NPM_VERSION }}
+          npm run webpack-prod -- \
+          --env.hostname=https://${{ inputs.HOSTNAME }} \
+          --env.DOMAIN_SETTINGS=https://${{ inputs.DOMAIN_SETTINGS }} \
+          --env.DOMAIN_MEASURE=https://${{ inputs.DOMAIN_MEASURE }} \
+          --env.DOMAIN_LOGIN=https://${{ inputs.DOMAIN_LOGIN }} \
+          --env.DOMAIN_PUBLISH=https://${{ inputs.DOMAIN_PUBLISH }} \
+          --env.DOMAIN_ENGAGE=https://${{ inputs.DOMAIN_ENGAGE }} \
+          --env.SETTINGS_API=https://${{ inputs.SETTINGS_API }} \
+          --env.API=https://${{ inputs.API }} \
+          --env.AUTH=https://${{ inputs.AUTH }} \
+          --env.PUBLISH=https://${{ inputs.PUBLISH }} \
+          --env.BACKEND_DOMAIN_SOCKET=https://${{ inputs.BACKEND_DOMAIN_SOCKET }} \
+          --env.BACKEND_DOMAIN_MEASURE=https://${{ inputs.BACKEND_DOMAIN_MEASURE }} \
+          --env.DEFAULT_REDIRECTION=http://${{ inputs.REDIRECT }}
 
-    - name: Install Packages        
-      run: npm install
-    
-    - name: Build
-      run: |
-        npm run webpack-prod -- \
-        --env.hostname=https://${{ inputs.HOSTNAME }} \
-        --env.DOMAIN_SETTINGS=https://${{ inputs.DOMAIN_SETTINGS }} \
-        --env.DOMAIN_MEASURE=https://${{ inputs.DOMAIN_MEASURE }} \
-        --env.DOMAIN_LOGIN=https://${{ inputs.DOMAIN_LOGIN }} \
-        --env.DOMAIN_PUBLISH=https://${{ inputs.DOMAIN_PUBLISH }} \
-        --env.DOMAIN_ENGAGE=https://${{ inputs.DOMAIN_ENGAGE }} \
-        --env.SETTINGS_API=https://${{ inputs.SETTINGS_API }} \
-        --env.API=https://${{ inputs.API }} \
-        --env.AUTH=https://${{ inputs.AUTH }} \
-        --env.PUBLISH=https://${{ inputs.PUBLISH }} \
-        --env.BACKEND_DOMAIN_SOCKET=https://${{ inputs.BACKEND_DOMAIN_SOCKET }} \
-        --env.BACKEND_DOMAIN_MEASURE=https://${{ inputs.BACKEND_DOMAIN_MEASURE }} \
-        --env.DEFAULT_REDIRECTION=http://${{ inputs.REDIRECT }}
+      - name: Upload build to artificats
+        uses: actions/upload-artifact@v2
+        with:
+          name: www
+          path: ${{ github.workspace }}/www
 
-    - name: Upload build to artificats
-      uses: actions/upload-artifact@v2
-      with:
-        name: www
-        path: ${{ github.workspace }}/www
-
-    - name: Upload infra/deployment info
-      uses: actions/upload-artifact@v2
-      with:
-        name: infra
-        path: ${{ github.workspace }}/infra
+      - name: Upload infra/deployment info
+        uses: actions/upload-artifact@v2
+        with:
+          name: infra
+          path: ${{ github.workspace }}/infra
