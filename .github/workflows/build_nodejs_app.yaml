@@ -81,7 +81,7 @@ jobs:
         nvm install-latest-npm
 
     - name: Install Packages        
-      run: npm install --no-progress --silent
+      run: npm install
     
     - name: Build
       run: |
