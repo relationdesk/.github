@@ -44,6 +44,10 @@ on:
       REDIRECT:
         required: true
         type: string
+      NPM_VERSION:
+        required: false
+        type: string
+        default: 7.6.0
     outputs:
       APP_NAME:
         value: ${{ jobs.build.outputs.APP_NAME }}
@@ -51,7 +55,6 @@ jobs:
   build:
     name: Application
     runs-on: ubuntu-latest
-    container: node:7.6.0-alpine
     outputs:
       APP_NAME: ${{ inputs.FRONTEND_NAME }}
     steps:     
@@ -69,7 +72,14 @@ jobs:
         key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
         restore-keys: ${{ runner.os }}-node-${{ inputs.FRONTEND_NAME }}
       
-    - name: Install packages
+    - name: Setup NPM
+      run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+        source ${HOME}/.nvm/nvm.sh
+        nvm install ${{ inputs.NPM_VERSION }}
+        nvm use ${{ inputs.NPM_VERSION }}
+        nvm install-latest-npm
+
+    - name: Install Packages        
       run: npm install --no-progress --silent
     
     - name: Build
