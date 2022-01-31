@@ -73,7 +73,8 @@ jobs:
         restore-keys: ${{ runner.os }}-node-${{ inputs.FRONTEND_NAME }}
       
     - name: Setup NPM
-      run: curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+      run: |
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
         source ${HOME}/.nvm/nvm.sh
         nvm install ${{ inputs.NPM_VERSION }}
         nvm use ${{ inputs.NPM_VERSION }}
