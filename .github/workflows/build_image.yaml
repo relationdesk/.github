@@ -80,7 +80,7 @@ jobs:
     - name: Format scan output
       run: |
         pip3 install json2html
-        python3 ${{ github.workspace }}/.github/convert2html.py ${{ steps.security-scan.outputs.scan-report-path }} > ./scan.html
+        python3 relationdesk/github-wf-templates/.github/convert2html.py ${{ steps.security-scan.outputs.scan-report-path }} > ./scan.html
 
     - name: Upload build to artificats
       uses: actions/upload-artifact@v2
