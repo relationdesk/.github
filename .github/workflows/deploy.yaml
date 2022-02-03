@@ -38,11 +38,11 @@ jobs:
       - name: Get Kubeconfig
         run: |
           mkdir ${HOME}/.kube/ -p
-          if [[ "${{ inputs.ENV_NAME }}" == "stage" ]]
+          if [[ "${{ inputs.ENV_NAME }}" == "prod" ]]
           then
-            echo "${{ secrets.STAGE_KUBECONFIG }}" > ${HOME}/.kube/config
-          else
             echo "${{ secrets.PROD_KUBECONFIG }}" > ${HOME}/.kube/config
+          else
+            echo "${{ secrets.STAGE_KUBECONFIG }}" > ${HOME}/.kube/config
           fi
 
       - name: Run Diff
