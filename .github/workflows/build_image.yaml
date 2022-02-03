@@ -69,21 +69,24 @@ jobs:
     outputs:
       outcome: ${{ steps.security-scan.outcome }}
     steps:
-    - name: Security scan on docker image
-      id: security-scan
-      uses: azure/container-scan@v0
-      with:
-        image-name: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG }}
-        USERNAME: ${{ inputs.USERNAME }}
-        password: ${{ secrets.TOKEN }}
+      - name: Get Code
+        uses: actions/checkout@v2
 
-    - name: Format scan output
-      run: |
-        pip3 install json2html
-        python3 ${{ github.workspace }}/.github/convert2html.py ${{ steps.security-scan.outputs.scan-report-path }} > ./scan.html
+      - name: Security scan on docker image
+        id: security-scan
+        uses: azure/container-scan@v0
+        with:
+          image-name: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG }}
+          USERNAME: ${{ inputs.USERNAME }}
+          password: ${{ secrets.TOKEN }}
 
-    - name: Upload build to artificats
-      uses: actions/upload-artifact@v2
-      with:
-        name: security-scan
-        path: ./scan.html
+      - name: Format scan output
+        run: |
+          pip3 install json2html
+          python3 ${{ github.workspace }}/.github/convert2html.py ${{ steps.security-scan.outputs.scan-report-path }} > ./scan.html
+
+      - name: Upload build to artificats
+        uses: actions/upload-artifact@v2
+        with:
+          name: security-scan
+          path: ./scan.html
