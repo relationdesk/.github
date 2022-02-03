@@ -44,7 +44,7 @@ on:
       REDIRECT:
         required: true
         type: string
-      NPM_VERSION:
+      NODE_VERSION:
         required: false
         type: string
         default: 7.6.0
@@ -65,8 +65,8 @@ jobs:
         run: |
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          nvm install ${{ inputs.NPM_VERSION }}
-          nvm use ${{ inputs.NPM_VERSION }}
+          nvm install ${{ inputs.NODE_VERSION }}
+          nvm use ${{ inputs.NODE_VERSION }}
           nvm install-latest-npm
 
       - name: Get npm cache directory
@@ -74,7 +74,7 @@ jobs:
         run: |
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          nvm use ${{ inputs.NPM_VERSION }}
+          nvm use ${{ inputs.NODE_VERSION }}
           echo "::set-output name=dir::$(npm config get cache)"
 
       - name: Setup Cache
@@ -88,14 +88,14 @@ jobs:
         run: |
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          nvm use ${{ inputs.NPM_VERSION }}
+          nvm use ${{ inputs.NODE_VERSION }}
           npm install
       
       - name: Build
         run: |
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-          nvm use ${{ inputs.NPM_VERSION }}
+          nvm use ${{ inputs.NODE_VERSION }}
           npm run webpack-prod -- \
           --env.hostname=https://${{ inputs.HOSTNAME }} \
           --env.DOMAIN_SETTINGS=https://${{ inputs.DOMAIN_SETTINGS }} \
