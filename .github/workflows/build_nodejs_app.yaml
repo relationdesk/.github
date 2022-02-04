@@ -90,8 +90,9 @@ jobs:
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           nvm use ${{ inputs.NODE_VERSION }}
           npm install
-      
-      - name: Build
+
+      - name: Build Node ${{ inputs.NODE_VERSION }}
+        if: inputs.NODE_VERSION != "7.6.0"
         run: |
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -110,6 +111,27 @@ jobs:
           --env BACKEND_DOMAIN_SOCKET=https://${{ inputs.BACKEND_DOMAIN_SOCKET }} \
           --env BACKEND_DOMAIN_MEASURE=https://${{ inputs.BACKEND_DOMAIN_MEASURE }} \
           --env DEFAULT_REDIRECTION=http://${{ inputs.REDIRECT }}
+
+      - name: Build Node ${{ inputs.NODE_VERSION }}
+        if: inputs.NODE_VERSION == "7.6.0"
+        run: |
+          export NVM_DIR="$HOME/.nvm"
+          [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+          nvm use ${{ inputs.NODE_VERSION }}
+          npm run webpack-prod -- \
+          --env.hostname=https://${{ inputs.HOSTNAME }} \
+          --env.DOMAIN_SETTINGS=https://${{ inputs.DOMAIN_SETTINGS }} \
+          --env.DOMAIN_MEASURE=https://${{ inputs.DOMAIN_MEASURE }} \
+          --env.DOMAIN_LOGIN=https://${{ inputs.DOMAIN_LOGIN }} \
+          --env.DOMAIN_PUBLISH=https://${{ inputs.DOMAIN_PUBLISH }} \
+          --env.DOMAIN_ENGAGE=https://${{ inputs.DOMAIN_ENGAGE }} \
+          --env.SETTINGS_API=https://${{ inputs.SETTINGS_API }} \
+          --env.API=https://${{ inputs.API }} \
+          --env.AUTH=https://${{ inputs.AUTH }} \
+          --env.PUBLISH=https://${{ inputs.PUBLISH }} \
+          --env.BACKEND_DOMAIN_SOCKET=https://${{ inputs.BACKEND_DOMAIN_SOCKET }} \
+          --env.BACKEND_DOMAIN_MEASURE=https://${{ inputs.BACKEND_DOMAIN_MEASURE }} \
+          --env.DEFAULT_REDIRECTION=http://${{ inputs.REDIRECT }}
 
       - name: Upload build to artificats
         uses: actions/upload-artifact@v2
