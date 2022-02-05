@@ -92,7 +92,7 @@ jobs:
           npm install
 
       - name: Build Node ${{ inputs.NODE_VERSION }}
-        if: inputs.NODE_VERSION != "7.6.0"
+        if: inputs.NODE_VERSION != 7.6.0
         run: |
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
@@ -113,7 +113,7 @@ jobs:
           --env DEFAULT_REDIRECTION=http://${{ inputs.REDIRECT }}
 
       - name: Build Node ${{ inputs.NODE_VERSION }}
-        if: inputs.NODE_VERSION == "7.6.0"
+        if: inputs.NODE_VERSION == 7.6.0
         run: |
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
