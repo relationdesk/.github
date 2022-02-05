@@ -113,6 +113,7 @@ jobs:
             --env BACKEND_DOMAIN_MEASURE=https://${{ inputs.BACKEND_DOMAIN_MEASURE }} \
             --env DEFAULT_REDIRECTION=http://${{ inputs.REDIRECT }}
           elif [[ ${{ inputs.NODE_VERSION }} == "7.6.0" ]]
+          then
             npm run webpack-prod -- \
             --env.hostname=https://${{ inputs.HOSTNAME }} \
             --env.DOMAIN_SETTINGS=https://${{ inputs.DOMAIN_SETTINGS }} \
