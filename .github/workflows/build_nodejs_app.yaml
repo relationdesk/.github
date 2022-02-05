@@ -96,7 +96,7 @@ jobs:
           export NVM_DIR="$HOME/.nvm"
           [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
           nvm use ${{ inputs.NODE_VERSION }}
-          if [[ ${{ inputs.NODE_VERSION }} != "7.6.0 "]]
+          if [[ ${{ inputs.NODE_VERSION }} != "7.6.0" ]]
           then
             npm run webpack-prod -- \
             --env hostname=https://${{ inputs.HOSTNAME }} \
