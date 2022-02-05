@@ -51,7 +51,7 @@ jobs:
       - name: Run Install
         run: |
           helm upgrade -i --namespace ${{ inputs.ENV_NAME }} \
-            --set image.repository=${{ inputs.ENV_NAME }}-${{ inputs.APP_NAME }} \
+            --set image.repository=ghcr.io/${{ github.repository }}/${{ inputs.ENV_NAME }}-${{ inputs.APP_NAME }} \
             --set image.tag=${{ inputs.TAG }} \
             --set ingress.hosts[0].host=${{ inputs.HOSTNAME }} \
             --values infra/values.yaml ${{ inputs.APP_NAME }} infra/${{ inputs.APP_NAME }}/
