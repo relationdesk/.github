@@ -136,8 +136,8 @@ jobs:
           name: www
           path: ${{ github.workspace }}/www
 
-      - name: Upload infra/deployment info
+      - name: Upload deploy/deployment info
         uses: actions/upload-artifact@v2
         with:
-          name: infra
-          path: ${{ github.workspace }}/infra
+          name: deploy
+          path: ${{ github.workspace }}/deploy
