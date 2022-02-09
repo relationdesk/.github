@@ -2,6 +2,9 @@ name: Build App
 on: 
   workflow_call:
     inputs:
+      APP_NAME:
+        required: true
+        type: string
       PHP_VERSION:
         required: false
         type: string
@@ -17,7 +20,7 @@ jobs:
     name: Application
     runs-on: ubuntu-latest
     outputs:
-      APP_NAME: ${{ inputs.FRONTEND_NAME }}
+      APP_NAME: ${{ inputs.APP_NAME }}
     steps:     
       - name: Setup php
         uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
