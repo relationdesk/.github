@@ -1,6 +1,7 @@
 name: Build App
 on: 
   workflow_call:
+    inputs:
       PHP_VERSION:
         required: false
         type: string
