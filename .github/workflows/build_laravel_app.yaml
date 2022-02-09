@@ -1,0 +1,49 @@
+name: Build App
+on: 
+  workflow_call:
+      PHP_VERSION:
+        required: false
+        type: string
+        default: 7.4
+    outputs:
+      APP_NAME:
+        value: ${{ jobs.build.outputs.APP_NAME }}
+jobs:
+  build:
+    name: Application
+    runs-on: ubuntu-latest
+    outputs:
+      APP_NAME: ${{ inputs.FRONTEND_NAME }}
+    steps:     
+      - name: Setup php
+        uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+        with:
+          php-version: '7.4'
+
+      - name: Add key to ssh-agent
+        uses: webfactory/ssh-agent@v0.5.4
+        with:
+          ssh-private-key: ${{ secrets.JENKINS_SSH_PRIVATE_KEY }}
+      
+      - name: Get Code
+        uses: actions/checkout@v2
+     
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist --ignore-platform-reqs
+
+      - name: Create artifact dir
+        run: |
+          mkdir www
+          cp app config public resources routes server.php aliases artisan server.php *.js vendor www -a
+
+      - name: Upload build to artificats
+        uses: actions/upload-artifact@v2
+        with:
+          name: www
+          path: ${{ github.workspace }}/www
+
+      - name: Upload deploy/deployment info
+        uses: actions/upload-artifact@v2
+        with:
+          name: deploy
+          path: ${{ github.workspace }}/deploy
