@@ -42,12 +42,13 @@ jobs:
         run: |
           mkdir www
           cp app config public resources routes server.php aliases artisan *.js vendor www -a
+          zip -r www.zip www
 
       - name: Upload build to artificats
         uses: actions/upload-artifact@v2
         with:
           name: www
-          path: ${{ github.workspace }}/www
+          path: ${{ github.workspace }}/www.zip
 
       - name: Upload deploy/deployment info
         uses: actions/upload-artifact@v2

@@ -129,12 +129,13 @@ jobs:
             --env.BACKEND_DOMAIN_MEASURE=https://${{ inputs.BACKEND_DOMAIN_MEASURE }} \
             --env.DEFAULT_REDIRECTION=http://${{ inputs.REDIRECT }}
           fi
+          zip -r www.zip www
           
       - name: Upload build to artificats
         uses: actions/upload-artifact@v2
         with:
           name: www
-          path: ${{ github.workspace }}/www
+          path: ${{ github.workspace }}/www.zip
 
       - name: Upload deploy/deployment info
         uses: actions/upload-artifact@v2
