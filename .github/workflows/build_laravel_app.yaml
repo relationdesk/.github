@@ -41,7 +41,7 @@ jobs:
       - name: Create artifact dir
         run: |
           mkdir www
-          cp app config public resources routes server.php aliases artisan server.php *.js vendor www -a
+          cp app config public resources routes server.php aliases artisan *.js vendor www -a
 
       - name: Upload build to artificats
         uses: actions/upload-artifact@v2
