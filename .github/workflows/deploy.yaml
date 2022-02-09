@@ -11,6 +11,9 @@ on:
       TAG: 
         required: true
         type: string
+      IMAGE_NAME: 
+        required: true
+        type: string
       HOSTNAME:
         required: true
         type: string
@@ -51,7 +54,7 @@ jobs:
       - name: Run Install
         run: |
           helm upgrade -i --namespace ${{ inputs.ENV_NAME }} \
-            --set image.repository=ghcr.io/${{ github.repository }}/${{ inputs.APP_NAME }}-${{ inputs.ENV_NAME }} \
+            --set image.repository=ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }} \
             --set image.tag=${{ inputs.TAG }} \
             --set ingress.hosts[0].host=${{ inputs.HOSTNAME }} \
             --values deploy/values.yaml ${{ inputs.APP_NAME }} deploy/${{ inputs.APP_NAME }}/
