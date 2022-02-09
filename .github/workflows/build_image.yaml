@@ -44,7 +44,7 @@ jobs:
     - name: Extract artifact
       run: |
         cd ${{ github.workspace }}/deploy/
-        unzip www.zip
+        unzip -q www.zip
         rm www.zip
 
     - name: Log in to the Github Container registry
