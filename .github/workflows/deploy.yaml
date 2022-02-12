@@ -49,7 +49,12 @@ jobs:
           fi
 
       - name: Run Diff
-        run: helm diff upgrade --allow-unreleased --namespace ${{ inputs.ENV_NAME }} ${{ inputs.APP_NAME }} deploy/${{ inputs.APP_NAME }}/ 
+        run: |
+          helm diff upgrade --allow-unreleased --namespace ${{ inputs.ENV_NAME }} \
+            --set image.repository=ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }} \
+            --set image.tag=${{ inputs.TAG }} \
+            --set ingress.hosts[0].host=${{ inputs.HOSTNAME }} \
+            --values deploy/values.yaml ${{ inputs.APP_NAME }} deploy/${{ inputs.APP_NAME }}
 
       - name: Run Install
         run: |
@@ -57,4 +62,4 @@ jobs:
             --set image.repository=ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }} \
             --set image.tag=${{ inputs.TAG }} \
             --set ingress.hosts[0].host=${{ inputs.HOSTNAME }} \
-            --values deploy/values.yaml ${{ inputs.APP_NAME }} deploy/${{ inputs.APP_NAME }}/
+            --values deploy/values.yaml ${{ inputs.APP_NAME }} deploy/${{ inputs.APP_NAME }}
