@@ -65,7 +65,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: ${{ github.workspace }}/deploy
-        file: ${{ inputs.DOCKERFILE }}
+        file: ${{ github.workspace }}/deploy/${{ inputs.DOCKERFILE }}
         push: true
         tags: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG }}
         platforms: linux/amd64
