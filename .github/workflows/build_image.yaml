@@ -14,6 +14,10 @@ on:
       APP_NAME: 
         required: true
         type: string
+      DOCKERFILE:
+        required: false
+        type: string
+        default: Dockerfile
     secrets:
       TOKEN: 
         required: true
@@ -61,6 +65,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: ${{ github.workspace }}/deploy
+        file: ${{ inputs.DOCKERFILE }}
         push: true
         tags: ghcr.io/${{ github.repository }}/${{ inputs.IMAGE_NAME }}:${{ inputs.TAG }}
         platforms: linux/amd64
