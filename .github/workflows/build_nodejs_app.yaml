@@ -141,4 +141,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: deploy
-          path: ${{ github.workspace }}/deploy
+          path: ${{ github.workspace }}/deploy/*
