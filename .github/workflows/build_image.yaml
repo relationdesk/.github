@@ -99,5 +99,5 @@ jobs:
       - name: Upload build to artificats
         uses: actions/upload-artifact@v2
         with:
-          name: security-scan
+          name: security-scan-${{ inputs.IMAGE_NAME }}
           path: ./scan.html
