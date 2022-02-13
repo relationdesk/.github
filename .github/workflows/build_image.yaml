@@ -94,10 +94,10 @@ jobs:
       - name: Format scan output
         run: |
           pip3 install json2html
-          python3 ${{ github.workspace }}/.github/convert2html.py ${{ steps.security-scan.outputs.scan-report-path }} > ./scan.html
+          python3 ${{ github.workspace }}/.github/convert2html.py ${{ steps.security-scan.outputs.scan-report-path }} > ./scan-${{ inputs.IMAGE_NAME }}.html
 
       - name: Upload build to artificats
         uses: actions/upload-artifact@v2
         with:
-          name: security-scan-${{ inputs.IMAGE_NAME }}
-          path: ./scan.html
+          name: security-scan
+          path: ./scan-${{ inputs.IMAGE_NAME }}.html
